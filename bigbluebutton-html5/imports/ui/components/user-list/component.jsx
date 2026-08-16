@@ -28,14 +28,13 @@ class UserList extends PureComponent {
       DarkModeIsEnabled,
       showBranding,
     } = this.props;
-    const logoUrl = DarkModeIsEnabled ? CustomDarkLogoUrl : CustomLogoUrl;
+    const logoUrl = (DarkModeIsEnabled ? CustomDarkLogoUrl : CustomLogoUrl) || '/images/netademix-logo.svg';
 
     return (
       <Styled.UserList data-test="userListContainer">
         {
           showBranding
             && !compact
-            && logoUrl
             ? <CustomLogo CustomLogoUrl={logoUrl} /> : null
         }
         <UserContentContainer compact={compact} />

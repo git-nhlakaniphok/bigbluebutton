@@ -1,3 +1,10 @@
+---
+name: lunge-rules
+description: "Engineering and architecture rules for Lunge Platform"
+globs: "**/*"
+alwaysApply: true
+---
+
 # 🛑 MANDATORY AI AGENT INSTRUCTIONS (100% STRICT COMPLIANCE REQUIRED ACROSS ALL RULES)
 
 > **ATTENTION ALL AI ASSISTANTS (Cursor, Claude, Copilot, Antigravity, Gemini)**:

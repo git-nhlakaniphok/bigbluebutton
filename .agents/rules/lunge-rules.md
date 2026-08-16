@@ -1,3 +1,8 @@
+---
+name: lunge-engineering-standards
+description: "Full-Stack Clean Architecture, 5-Stage Execution Protocol, and engineering standards for Lunge Platform"
+---
+
 # 🛑 MANDATORY AI AGENT INSTRUCTIONS (100% STRICT COMPLIANCE REQUIRED ACROSS ALL RULES)
 
 > **ATTENTION ALL AI ASSISTANTS (Cursor, Claude, Copilot, Antigravity, Gemini)**:

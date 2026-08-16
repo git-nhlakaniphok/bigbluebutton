@@ -4,27 +4,117 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BigBlueButton</title>
+    <title>Lunge Live</title>
+    <!-- Modern typography from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .error-div {
-            background-color: #f2dede;
-            padding: 15px;
-            border-radius: 10px;
-            border-color: #ebccd1;
+        :root {
+            --lunge-primary: #4778ff;
+            --lunge-primary-hover: #3c64cc;
+            --lunge-bg: #f9fafc;
+            --lunge-card-bg: #ffffff;
+            --lunge-text-main: #2b2e30;
+            --lunge-text-muted: #7c8491;
+            --lunge-border: #eef0f3;
+            --shadow-md: 0 8px 24px -4px rgba(71, 120, 255, 0.08), 0 4px 12px -2px rgba(71, 120, 255, 0.04);
+            --danger-bg: #ffe6e6;
+            --danger-text: #cc0000;
+            --danger-border: #ffb8b8;
         }
-        .error-div-title {
-            font-size: 25px;
+
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--lunge-bg);
+            color: var(--lunge-text-main);
+            display: flex;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
         }
-        .error-message {
-            color: #a94442;
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: var(--lunge-card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            border: 1px solid var(--lunge-border);
+            box-shadow: var(--shadow-md);
+            max-width: 480px;
+            width: 90%;
+        }
+
+        .logo {
+            width: 180px;
+            height: auto;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
             font-size: 15px;
-            margin-top: 2px 0 0 0;
+            color: var(--lunge-text-muted);
+            margin: 0 0 2rem 0;
+        }
+
+        .error-div {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+            border: 1px solid var(--danger-border);
+            padding: 1.25rem;
+            border-radius: 12px;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 1rem;
+        }
+
+        .error-div h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .error-message {
+            font-size: 14px;
+            margin: 4px 0;
+            line-height: 1.5;
+        }
+
+        .spinner {
+            border: 3px solid rgba(71, 120, 255, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--lunge-primary);
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body style="margin:0">
-    <div style="display: flex; height: 100vh; margin: 0; flex-direction: column; align-items: center; justify-content: center;">
-        <h1 id="welcome-message">Welcome to BigBlueButton!</h1>
+<body>
+    <div class="container" id="main-container">
+        <img class="logo" src="images/logo.svg" alt="Lunge Logo" id="lunge-logo-img" onerror="this.src='images/logo.png'">
+        <div class="spinner" id="loading-spinner"></div>
+        <h1 id="welcome-message">Connecting to Lunge Live...</h1>
+        <p class="subtitle" id="welcome-subtitle">Please wait while we set up your session.</p>
     </div>
 </body>
 <script>
@@ -33,25 +123,31 @@
     const positionError = queryString.indexOf(ERRORS_QUERY_LABEL);
     let jsonString;
     if (positionError !== -1) {
-        jsonString = JSON.parse(queryString.slice(positionError + ERRORS_QUERY_LABEL.length + 1));
-        const welcomeMessage = document.querySelector('#welcome-message');
-        const errorContainer = document.createElement('div');
-        errorContainer.classList.add("error-div");
-        welcomeMessage.before(errorContainer);
+        try {
+            jsonString = JSON.parse(queryString.slice(positionError + ERRORS_QUERY_LABEL.length + 1));
+            
+            // Hide loading spinner and welcome labels
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('welcome-message').innerText = "Session Error";
+            document.getElementById('welcome-subtitle').innerText = "An error occurred while launching the classroom.";
 
-        for (let i in jsonString) {
-            const newError = document.createElement('p')
-            newError.classList.add("error-message");
-            newError.innerText = "Error: " + jsonString[i].message;
-            errorContainer.appendChild(newError);
+            const errorContainer = document.createElement('div');
+            errorContainer.classList.add("error-div");
+            document.getElementById('main-container').appendChild(errorContainer);
+
+            const errorTitle = document.createElement('h3');
+            errorTitle.innerText = "Error Details";
+            errorContainer.appendChild(errorTitle);
+
+            for (let i in jsonString) {
+                const newError = document.createElement('p')
+                newError.classList.add("error-message");
+                newError.innerText = jsonString[i].message;
+                errorContainer.appendChild(newError);
+            }
+        } catch (e) {
+            console.error("Failed to parse errors parameter", e);
         }
-
-        welcomeMessage.remove();
-
-        const bigBlueButton = document.createElement('h1');
-        bigBlueButton.innerHTML = "BigBlueButton";
-        errorContainer.before(bigBlueButton);
     }
-    
 </script>
 </html>

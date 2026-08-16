@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "universal-context-mcp": {
+      "command": "/usr/bin/python3",
+      "args": [
+        "/Users/nhlakaniphokhumalo/.context-mcp/server/run_server.py"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "codebase-memory-mcp": {
+      "command": "/Users/nhlakaniphokhumalo/.local/bin/codebase-memory-mcp",
+      "args": []
+    }
+  }
+}
