@@ -19,8 +19,6 @@ const colorBlueLighterChannel = '146 188 234';
 const colorTransparent = 'var(--color-transparent, #ff000000)';
 
 const colorUserModerator = 'var(--color-user-moderator, #7B209F)';
-
-const colorUserModerator = 'var(--color-user-moderator, #7B209F)';
 const colorPrimary = 'var(--color-primary, #4778ff)';
 const colorDanger = 'var(--color-danger, #DF2721)';
 const colorDangerDark = 'var(--color-danger-dark, #AE1010)';

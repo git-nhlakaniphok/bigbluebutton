@@ -28,7 +28,10 @@ class UserList extends PureComponent {
       DarkModeIsEnabled,
       showBranding,
     } = this.props;
-    const logoUrl = (DarkModeIsEnabled ? CustomDarkLogoUrl : CustomLogoUrl) || '/images/netademix-logo.svg';
+    const defaultLogo = (typeof window !== 'undefined' && window.meetingClientSettings?.public?.app?.basename)
+      ? `${window.meetingClientSettings.public.app.basename}/images/netademix-logo.svg`
+      : 'images/netademix-logo.svg';
+    const logoUrl = (DarkModeIsEnabled ? CustomDarkLogoUrl : CustomLogoUrl) || defaultLogo;
 
     return (
       <Styled.UserList data-test="userListContainer">

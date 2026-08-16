@@ -168,6 +168,22 @@ enableFirewalldRules() {
   firewall-cmd --reload
 }
 
+#
+# Enable Iframe embedding from Lunge / Netademix domains
+#
+enableIframeEmbedding() {
+  echo "  - Enabling Iframe embedding for Netademix / Lunge domains"
+
+  mkdir -p /etc/bigbluebutton/nginx
+
+  cat > /etc/bigbluebutton/nginx/iframe-embed.nginx << 'HERE'
+# Allow embedding in iframe from Lunge / Netademix domains
+add_header X-Frame-Options "" always;
+add_header Content-Security-Policy "frame-ancestors 'self' https://*.lunge.co.za https://*.netademix.com https://netademix.com http://localhost:* https://localhost:*;" always;
+add_header Permissions-Policy "camera=*, microphone=*, display-capture=*, fullscreen=*, autoplay=*, clipboard-write=*";
+HERE
+}
+
 
 notCalled() {
 #
@@ -191,6 +207,7 @@ source /etc/bigbluebutton/bbb-conf/apply-lib.sh
 #enableHTML5ClientLog
 #enableUFWRules
 #enableFirewalldRules
+#enableIframeEmbedding
 
 
 # Shorten the FreeSWITCH "you have been muted" and "you have been unmuted" prompts

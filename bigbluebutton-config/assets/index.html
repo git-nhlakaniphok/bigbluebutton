@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lunge Live</title>
+    <title>Netademix Live</title>
+    <link rel="icon" type="image/svg+xml" href="images/netademix-logo.svg">
     <!-- Modern typography from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -111,10 +112,10 @@
 </head>
 <body>
     <div class="container" id="main-container">
-        <img class="logo" src="images/logo.svg" alt="Lunge Logo" id="lunge-logo-img" onerror="this.src='images/logo.png'">
+        <img class="logo" src="images/netademix-logo.svg" alt="Netademix Live" id="netademix-logo-img" onerror="this.src='images/netademix-logo.png'">
         <div class="spinner" id="loading-spinner"></div>
-        <h1 id="welcome-message">Connecting to Lunge Live...</h1>
-        <p class="subtitle" id="welcome-subtitle">Please wait while we set up your session.</p>
+        <h1 id="welcome-message">Connecting to Netademix Live...</h1>
+        <p class="subtitle" id="welcome-subtitle">Please wait while we set up your virtual classroom session.</p>
     </div>
 </body>
 <script>
@@ -128,8 +129,8 @@
             
             // Hide loading spinner and welcome labels
             document.getElementById('loading-spinner').style.display = 'none';
-            document.getElementById('welcome-message').innerText = "Session Error";
-            document.getElementById('welcome-subtitle').innerText = "An error occurred while launching the classroom.";
+            document.getElementById('welcome-message').innerText = "Virtual Classroom Error";
+            document.getElementById('welcome-subtitle').innerText = "An error occurred while launching Netademix Live.";
 
             const errorContainer = document.createElement('div');
             errorContainer.classList.add("error-div");

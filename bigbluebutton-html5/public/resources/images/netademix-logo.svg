@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" role="img" aria-label="Netademix">
+  <defs>
+    <linearGradient id="disc" x1="18%" y1="8%" x2="88%" y2="96%">
+      <stop offset="0%" stop-color="#29B6F6"/>
+      <stop offset="48%" stop-color="#1565c0"/>
+      <stop offset="100%" stop-color="#0d47a1"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="55%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Mark -->
+  <g transform="translate(8,16) scale(0.8)">
+    <circle cx="64" cy="64" r="60" fill="url(#disc)"/>
+    <circle cx="64" cy="64" r="60" fill="url(#sheen)"/>
+    <g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke-width="7.5" d="M38 34 V94"/>
+      <path stroke-width="7.5" d="M38 34 L90 94"/>
+      <path stroke-width="7.5" d="M90 34 V94"/>
+    </g>
+    <g fill="#E3F2FD">
+      <circle cx="38" cy="34" r="6.2"/>
+      <circle cx="38" cy="64" r="5.2"/>
+      <circle cx="38" cy="94" r="6.2"/>
+      <circle cx="64" cy="64" r="5.6"/>
+      <circle cx="90" cy="34" r="6.2"/>
+      <circle cx="90" cy="64" r="5.2"/>
+      <circle cx="90" cy="94" r="6.2"/>
+    </g>
+    <g fill="#E3F2FD" stroke="#E3F2FD" stroke-width="2" stroke-linecap="round">
+      <circle cx="22" cy="52" r="2.4"/>
+      <path d="M24.2 53.2 L32.5 58.5"/>
+      <circle cx="106" cy="48" r="2.4"/>
+      <circle cx="112" cy="58" r="2"/>
+      <path d="M106 49.8 L112 56.2"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <text
+    x="148"
+    y="98"
+    fill="#1565c0"
+    font-family="Arial Black, Helvetica Neue, Arial, sans-serif"
+    font-size="64"
+    font-weight="800"
+    letter-spacing="-1.8"
+  >Netademix</text>
+
+  <!-- Accent link under -mix -->
+  <line x1="430" y1="118" x2="575" y2="118" stroke="#29B6F6" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="582" cy="118" r="5" fill="#29B6F6"/>
+</svg>
