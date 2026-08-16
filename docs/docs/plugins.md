@@ -829,6 +829,16 @@ That being said, here are the extensible areas we have so far:
 
 Mind that no plugin will interfere into another's extensible area. So feel free to set whatever you need into a certain plugin with no worries.
 
+#### Configurable button styles
+
+Plugin-provided **nav bar**, **actions bar**, and **presentation toolbar** buttons accept a few optional style fields that control the rendered button's shape. They are read when present and fall back to the previous defaults when omitted, so older plugin objects keep rendering exactly as before (requires plugin SDK `0.0.100` or later):
+
+- `color` — button color (e.g. `primary`, `default`). Default: `primary` in the nav bar and actions bar, `default` in the presentation toolbar.
+- `circle` — render as a circular icon button. Default: `true` in the actions bar, `false` in the presentation toolbar and nav-bar.
+- `hideLabel` — hide the text label and show only the icon. Default: `true` in the actions bar, `false` in the presentation toolbar and nav-bar.
+- `size` — button size (`sm`, `md`, `lg`). Default: `lg` in the actions bar, `md` in the presentation toolbar and nav-bar.
+- `style` — an inline CSS style object applied to the button.
+
 ### Auxiliaries:
 
 - `getSessionToken`: returns the user session token located on the user's URL.
@@ -852,13 +862,14 @@ export const { logger: pluginLogger } = BbbPluginSdk.getPluginApi(uuid);
 - `useLoadedUserList` hook: provides information regarding the loaded user list (displayed in the screen);
 - `useCurrentUser` hook: provides information regarding the current user;
 - `useUsersBasicInfo` hook: provides information regarding all users (only crucial information: userId, name and role);
-- `useLoadedChatMessages` hook: provides information regarding the loaded chat messages;
+- `useLoadedChatMessages` hook: provides information regarding the loaded chat messages. Each message carries `senderUserId` and, since BigBlueButton 3.0.33, `senderRole` — the role the sender had when the message was sent (it stays as it was, even if the user's role changes later in the meeting);
 - `useCustomSubscription` hook: with this hook, the developer can query pretty much anything graphql can provide. Note: Make sure that, on BBB version change, the custom subscriptions you make will work as expected.
 - `usePluginSettings` hook: it provides all the specific settings regarding the current plugin it's been loaded from.
 - `useTalkingIndicator` hook: it gives you information on the user-voice data, that is, who is talking or muted.
 - `useMeeting` hook: it gives you information on the current meeting that the user is on.
 - `useMeetingData` hook: provides detailed meeting data with projection support, offering more flexibility than `useMeeting`.
 - `useCustomQuery` hook: similar to `useCustomSubscription`, but for one-time GraphQL queries rather than subscriptions. Note: Make sure that, on BBB version change, the custom queries you make will work as expected.
+- `useTimer` hook: it gives you the state of the meeting timer/stopwatch — whether it is `active` and `running`, whether it is in `stopwatch` mode, the configured `time`, `accumulated` and `timePassed` values, `startedAt`, whether it has `elapsed`, and the selected `songTrack` (requires plugin SDK `0.0.104` or later, shipped with BigBlueButton 3.0.33).
 
 So for these types of hooks, the return will follow the same structure:
 
@@ -1090,6 +1101,8 @@ As seen for the `useUiData`, the return type is well defined by the enum chosen 
 - presentation-area:
   - open: this function will open the presentation area content automatically;
   - close: this function will close the presentation area content automatically;
+- screenshare:
+  - stop: Stops broadcasting the screenshare if user is presenter and is sharing screen (it is ignored otherwise);
 - sidekick-options-container: **(deprecated - use [sidekickArea](#sidekickarea-ui-commands) instead)**
   - open: this function will open the sidekick options panel automatically;
   - close: this function will close the sidekick options panel automatically (and also the sidebar content if open, to avoid inconsistencies in ui);
@@ -1177,6 +1190,9 @@ For a complete working example, see the [sample-generic-content-sidekick-plugin]
   - caption:
     - save: this function saves the given text, locale and caption type
     - addLocale: this function sends a locale to be added to the available options
+  
+  - presentation:
+    - upload: uploads a new presentation to BigBlueButton;
 
 As these commands can change state in the back-end, "permission control" is available based on role for some of the Commands (in the manifest), those are:
   - chat:

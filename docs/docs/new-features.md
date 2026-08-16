@@ -143,6 +143,31 @@ To enable it, you would first need to install the optional package via
 At this point you can use it in a specific session by passing `sharedNotesEditor=blockNote` on the `/create` call.
 If you have made up your mind and would like to use it for all sessions, add the same line (`sharedNotesEditor=blockNote`) to `/etc/bigbluebutton/bbb-web.properties` and restart BigBlueButton via `$ sudo bbb-conf --restart`
 
+#### Import and export BlockNote shared notes as Markdown
+
+The BlockNote shared notes editor can now exchange content as Markdown (available in BigBlueButton 3.0.33). From the shared notes options menu, the presenter can choose **Import from Markdown**, which opens a dialog to either upload a Markdown file (drag-and-drop or file picker) or paste Markdown directly. The imported content can be **appended** to the existing notes (the default, so importing never destroys what is already there) or **replace** the whole document. Separately, an **Export notes as Markdown** option downloads the current notes as a `.md` file.
+
+Both options are **disabled by default** in BigBlueButton 3.0 so that a minor upgrade does not add new menu buttons unexpectedly. Enable either or both in `/etc/bigbluebutton/bbb-html5.yml` and restart with `sudo bbb-conf --restart`:
+
+```yaml
+public:
+  sharedNotes:
+    importMarkdownEnabled: true
+    exportMarkdownEnabled: true
+```
+
+These toggles only affect the BlockNote editor; they are ignored when Etherpad is used.
+
+Integrations can also seed a session's shared notes with Markdown at creation time using the `sharedNotesInitialContentMarkdown` / `sharedNotesInitialContentMarkdownUrl` create parameters (or a `sharedNotesInitialContentMarkdown` POST module). See the [Create API parameters](/development/api/#get-post-create) for details.
+
+<!-- TODO add screenshot of the Import from Markdown dialog (append/replace + file upload) -->
+
+#### Panopto videos can be shared as external video
+
+The **Share an external video** feature now includes a player for [Panopto](https://www.panopto.com/) recordings (available in BigBlueButton 3.0.33). Paste a Panopto viewer link of the form `https://<your-panopto-host>/Panopto/Pages/Viewer.aspx?id=<video-id>` and it plays inside the presentation area with the usual synchronization (play/pause, seek and playback rate are shared with the other participants), just like the YouTube and Vimeo players.
+
+The player is tenant-agnostic — any Panopto host works, including `*.panopto.com`, `*.panopto.eu` and self-hosted installations. Note that it loads the Panopto embed API from `https://developers.panopto.com`, so participants need to be able to reach that host, and the video must be viewable by them in Panopto (BigBlueButton does not proxy Panopto's own authentication).
+
 
 ### Engagement
 
@@ -182,6 +207,10 @@ Following the license change of Akka back in September 2022, we considered sever
 
 Administrators will appreciate that we now allow the passing of custom client settings through the meeting create API call. You no longer need separate servers to accommodate sessions requiring vastly different `settings.yml` configurations.
 
+#### Disable recording formats per meeting
+
+Integrations can now skip one or more enabled recording formats for a specific meeting by passing `meta_bbb-disable-recording-formats` on the `/create` call, for example `meta_bbb-disable-recording-formats=video,presentation`. Disabled formats are not processed or published. See the [Create API parameters](/development/api/#get-post-create) and [recording format customization](/administration/customize#install-additional-recording-processing-formats) docs for details.
+
 #### Removal of Meteor and MongoDB
 
 For years, we have discussed internally the topic of replacing Meteor.js with other technologies in order to improve scalability, performance, etc. Over the last year, we have introduced several different new components to replace Meteor. These new components are: `bbb-graphql-server`, `bbb-graphql-middleware`, `bbb-graphql-actions`, PostgreSQL database, and the GraphQL server Hasura. As of BigBlueButton 3.0.0-beta.1, we are no longer using Meteor or MongoDB.
@@ -219,6 +248,10 @@ Everyone sees the margins and follows the presenter's point of view. If multi-us
 You can enable infinite whiteboard via `public.whiteboard.allowInfiniteWhiteboard` https://github.com/bigbluebutton/bigbluebutton/blob/v3.0.8/bigbluebutton-html5/private/config/settings.yml#L1047
 
 Note, circa BigBlueButton 3.0.19 Infinite Whiteboard recording support was finalized and therefore we drop the "experimental" flag from it.
+
+#### Session token removed from the client URL
+
+Starting with BigBlueButton 3.0.30, the HTML5 client removes the `sessionToken` query parameter from the browser address bar after loading, keeping it in session storage instead (and recovering it from there on page reload). This avoids presenters accidentally exposing their token while sharing their screen, and reduces the chance of confusing the client URL with a shareable join URL. The token is still passed on the initial redirect from `join`, so existing integrations are unaffected.
 
 ### Experimental
 
@@ -299,6 +332,14 @@ For full details on what is new in BigBlueButton 3.0, see the release notes.
 
 
 Recent releases:
+- [3.0.35](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.35)
+- [3.0.34](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.34)
+- [3.0.33](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.33)
+- [3.0.32](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.32)
+- [3.0.31](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.31)
+- [3.0.30](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.30)
+- [3.0.29](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.29)
+- [3.0.28](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.28)
 - [3.0.27](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.27)
 - [3.0.26](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.26)
 - [3.0.25](https://github.com/bigbluebutton/bigbluebutton/releases/tag/v3.0.25)
@@ -383,6 +424,21 @@ In BigBlueButton 2.6.17/2.7.5/3.0.0-alpha.5 we added a new configuration propert
 
 In BigBlueButton 3.0.0-alpha.5 we replaced the JOIN parameter `defaultLayout` with the JOIN parameter `userdata-bbb_default_layout`. If none provided the `meetingLayout` (passed on CREATE) will be used. If none passed, and if none passed there, the `defaultMeetingLayout` from bbb-web will be used.
 
+#### Added new setting to control guest lobby waiting queue position
+
+- Client settings.yml: `showGuestLobbyWaitingQueuePosition`. Defaults to `true`
+
+#### Added new settings to enable Markdown import/export in shared notes
+
+- Client settings.yml: `public.sharedNotes.importMarkdownEnabled`. Defaults to `false`. When `true`, presenters see an **Import from Markdown** option in the BlockNote shared notes menu.
+- Client settings.yml: `public.sharedNotes.exportMarkdownEnabled`. Defaults to `false`. When `true`, an **Export notes as Markdown** option is shown in the BlockNote shared notes menu.
+
+#### Added new setting to tune the slide-change image swap
+
+- Client settings.yml: `public.whiteboard.slideSwapDecodeTimeoutMs`. Defaults to `250` (milliseconds). Added in BigBlueButton 3.0.33.
+
+On a slide change the client waits, up to this bound, for the new slide's image to finish decoding before swapping the visible page — which removes the white flash that used to appear between slides. A cached or fast-loading slide resolves well within the bound; if the image takes longer, the swap proceeds anyway (the pre-3.0.33 behaviour, including the white flash) rather than leaving the toolbar and zoom controls on a stale slide. Raise it only if your presentations are served slowly enough that the flash is still visible, and keep in mind that a larger value delays the slide change itself by the same amount.
+
 #### Added new setting and userdata to allow skipping echo test if session has valid input/output devices stored
 
 - Client settings.yml: `skipEchoTestIfPreviousDevice`. Defaults to `false`
@@ -430,6 +486,7 @@ Modified/added events
 - `muteOnStart` default value changed to `true` - which helps now that `transparentListenOnly` is enabled by default too. See [PR 20848](https://github.com/bigbluebutton/bigbluebutton/issues/20848) for more info.
 - `insertDocumentSupportedProtocols` renamed to `fetchUrlSupportedProtocols`
 - `insertDocumentBlockedHosts` renamed to `fetchUrlBlockedExternalHosts`
+- `html5PluginSdkVersion` bumped to `0.0.104` (in BBB 3.0.33)
 
 #### Added
 - `pluginManifestFetchTimeout` added
@@ -480,6 +537,10 @@ Modified/added events
 - `pluginManifestCacheEnabled` added in BBB 3.0.27
 - `pluginManifestCacheDirectory` added in BBB 3.0.27
 - `pluginManifestCacheRefreshIntervalMinutes` added in BBB 3.0.27
+- `clientSettingsOverrideStrictValidation` added in BBB 3.0.30
+- `clientSettingsFilePath` added in BBB 3.0.30
+- `maxSharedNotesInitialContentUrlPayloadSize` added in BBB 3.0.33 — caps the size (in KiB, default `1024`) of the response fetched by `sharedNotesInitialContentJsonUrl` / `sharedNotesInitialContentMarkdownUrl`
+- `numPresentationDownloadThreads` added in BBB 3.0.33 — size of the bounded pool that downloads pre-uploaded presentations in the background (default `5`). See [Tune parallel downloads of pre-uploaded presentations](/administration/customize#tune-parallel-downloads-of-pre-uploaded-presentations)
 
 ### Removed support for POST requests on `join` endpoint and Content-Type headers are now required
 
